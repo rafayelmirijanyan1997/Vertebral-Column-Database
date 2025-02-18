@@ -1,513 +1,98 @@
-# Vertebral Column Dataset Analysis
+Overview
+This repository contains a Jupyter Notebook (Vertebral_Column_dataset_analysis.ipynb) that performs an analysis on the Vertebral Column dataset. The dataset is fetched from the UCI Machine Learning Repository and includes biomechanical features used to classify orthopaedic patients into different categories (normal, disk hernia, or spondylolisthesis). The analysis includes data preprocessing, exploratory data analysis, and the application of machine learning techniques such as K-Nearest Neighbors (KNN) for classification.
 
-## 📌 Overview
-This project analyzes the Vertebral Column dataset using Python, exploring biomechanical features and applying machine learning models for classification.
+Dataset
+The dataset used in this analysis is the Vertebral Column dataset, which can be accessed via the UCI Machine Learning Repository (ID: 212). It contains six biomechanical features derived from the shape and orientation of the pelvis and lumbar spine. The target variable is the classification of patients into three categories: Normal, Disk Hernia, or Spondylolisthesis.
 
-## a) Downloading the dataset
+Features:
+Pelvic Incidence
 
-### 🔧 Code Example
-```python
-!pip3 install -U ucimlrepo 
-from ucimlrepo import fetch_ucirepo
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score, f1_score
-from scipy.spatial.distance import mahalanobis
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import precision_score
-import seaborn as sns
+Pelvic Tilt
 
-```
-
-### 🔧 Code Example
-```python
-vertebral_column = fetch_ucirepo(id=212) 
-```
+Lumbar Lordosis Angle
 
-### 🔧 Code Example
-```python
-print(vertebral_column.variables) 
+Sacral Slope
 
-```
+Pelvic Radius
 
-### 🔧 Code Example
-```python
-print(vertebral_column)
-```
+Degree of Spondylolisthesis
 
-### 🔧 Code Example
-```python
-type(vertebral_column)
+Target:
+Class (Normal, Hernia, Spondylolisthesis)
 
-```
+Requirements
+To run the Jupyter Notebook, you need the following Python libraries installed:
 
-## pre processing and exploratory data analysis
+ucimlrepo: To fetch the dataset from the UCI Machine Learning Repository.
 
-Let's first make scatterplots of the independent variables in the dataset by using color to show Classes 0 and 1
+numpy: For numerical operations.
 
-### 🔧 Code Example
-```python
-data = vertebral_column.data.features 
-target = vertebral_column.data.targets
+pandas: For data manipulation and analysis.
 
-```
+matplotlib: For data visualization.
 
-### 🔧 Code Example
-```python
-target = target.replace({"Normal": 0, "Hernia": 1, "Spondylolisthesis": 1})
-```
+seaborn: For advanced data visualization.
 
-### 🔧 Code Example
-```python
-print(target)
-```
+scikit-learn: For machine learning algorithms and evaluation metrics.
 
-### 🔧 Code Example
-```python
-data["Class"] = target
-```
+You can install the required libraries using pip:
 
-### 🔧 Code Example
-```python
-print(data["Class"].unique())
-```
+bash
+Copy
+pip install ucimlrepo numpy pandas matplotlib seaborn scikit-learn
+Notebook Structure
+Data Downloading and Loading:
 
-### 🔧 Code Example
-```python
-sns.pairplot(data, hue="Class", diag_kind="hist", palette="coolwarm");
+The dataset is fetched using the ucimlrepo library.
 
-```
+Basic information about the dataset is displayed, including feature descriptions and metadata.
 
-### 🔧 Code Example
-```python
-print(data)
+Data Preprocessing and Exploratory Data Analysis (EDA):
 
-```
+The dataset is preprocessed, including handling missing values and encoding categorical variables.
 
-### 🔧 Code Example
-```python
-print(target)
-```
+Scatterplots and other visualizations are created to explore the relationships between independent variables and the target classes.
 
-### Now let's make boxplots for each of the independent variables. Use color to show Classes 0 
+Machine Learning Model Application:
 
-### 🔧 Code Example
-```python
-sns.set(style="whitegrid")
-plt.figure(figsize=(10, 6))
+The K-Nearest Neighbors (KNN) classifier is applied to the dataset.
 
-sns.boxplot(data = data.loc[:, 'pelvic_incidence':'degree_spondylolisthesis'], orient = 'h', width=0.6)
-plt.title("Horizontal Boxplot for independent variables", fontsize=16, weight='bold')
-plt.xlabel("Values", fontsize=14)
-plt.ylabel("biomechanical attributes", fontsize=14)
-```
+Model performance is evaluated using accuracy, F1 score, and confusion matrix.
 
-### As we need to split train/test data let's select the first 70 rows of Class 0 and the  first 140 rows of Class 1 as the training set and the rest of the data as the test set.
+Results and Visualizations:
 
-### 🔧 Code Example
-```python
-normal = data[data['Class'] == 0]
-abnormal= data[data['Class'] == 1]
-```
+The results of the classification are visualized using confusion matrices and other relevant plots.
 
-### 🔧 Code Example
-```python
-train_class_normal = normal.head(70)
-train_class_abnormal = abnormal.head(140)
-```
+Insights from the analysis are discussed.
 
-### 🔧 Code Example
-```python
-train_set = pd.concat([train_class_normal, train_class_abnormal])
+Usage
+Clone the Repository:
 
-```
+bash
+Copy
+git clone https://github.com/your-username/vertebral-column-analysis.git
+cd vertebral-column-analysis
+Install Dependencies:
+Ensure you have the required Python libraries installed as mentioned in the Requirements section.
 
-### 🔧 Code Example
-```python
-test_class_normal = normal.iloc[70:]
-test_class_abnormal = abnormal.iloc[140:]
+Run the Jupyter Notebook:
+Open the Jupyter Notebook and run the cells sequentially to perform the analysis.
 
+bash
+Copy
+jupyter notebook Vertebral_Column_dataset_analysis.ipynb
+Download the Notebook
+You can download the Jupyter Notebook directly from this repository by clicking on the Vertebral_Column_dataset_analysis.ipynb file and selecting the "Download" option.
 
-test_set = pd.concat([test_class_normal, test_class_abnormal])
-```
+License
+This project is licensed under the MIT License. See the LICENSE file for details.
 
-### 🔧 Code Example
-```python
-print(train_set)
-```
+Acknowledgments
+The dataset is provided by the UCI Machine Learning Repository.
 
-### 🔧 Code Example
-```python
-print(test_set)
-```
+The analysis is inspired by various machine learning and data science resources.
 
-## Applying K Nearest Neighbors to classify
+Contact
+For any questions or suggestions, please feel free to open an issue or contact the repository owner.
 
-### Let's use Euclidean distance first
-
-### 🔧 Code Example
-```python
-X_train = train_set.loc[:, 'pelvic_incidence':'degree_spondylolisthesis'].values
-y_train = train_set['Class']
-
-X_test = test_set.loc[:, 'pelvic_incidence':'degree_spondylolisthesis'].values
-y_test = test_set['Class']
-
-k_values = list(range(208,3,-3))
-
-train_errors = []
-test_errors = []
-
-for k in k_values:
-    knn = KNeighborsClassifier(n_neighbors = k, metric = "euclidean")
-    knn.fit(X_train, y_train)
-    y_train_pred = knn.predict(X_train)
-    y_test_pred = knn.predict(X_test)
-
-    train_error = 1 - accuracy_score(y_train, y_train_pred)
-    test_error = 1 - accuracy_score(y_test, y_test_pred)
-
-    train_errors.append(train_error)
-    test_errors.append(test_error)
-
-
-
-
-
-    
-```
-
-### Plotting train and test errors in terms of k for k in 208; 205; : : : ; 7; 4; 1; g (in reverse order). Let's also calculate the confusion matrix, true positive rate, true negative rate, precision, and F1-score when k = k
-
-### 🔧 Code Example
-```python
-plt.figure(figsize = (10,5))
-plt.plot(k_values, train_errors, label = 'Train Error')
-plt.plot(k_values, test_errors, label = 'Test Error')
-
-plt.xlabel('Number of Neighbors (k)')
-plt.ylabel('Error Rate')
-plt.title('Train and Test Errors vs. k')
-plt.legend()
-plt.grid()
-plt.show()
-
-```
-
-### 🔧 Code Example
-```python
-print(min(train_errors))
-
-```
-
-### Lets select k = 25, which is the point where the test error decreases before increasing drastically
-
-### 🔧 Code Example
-```python
-knn = KNeighborsClassifier(n_neighbors = 25, metric = "euclidean")
-
-
-knn.fit(X_train, y_train)
-y_test_pred = knn.predict(X_test)
-
-tn, fp, fn, tp = confusion_matrix(y_test, y_test_pred).ravel()
-
-
-
-tpr = tp / (tp + fn) 
-tnr = tn / (tn + fp) 
-precision = precision_score(y_test, y_test_pred)
-f1 = f1_score(y_test, y_test_pred)
-
-
-print(f"Confusion Matrix:\n{confusion_matrix(y_test, y_test_pred)}")
-print(f"True Positive Rate (TPR/Recall): {tpr:.4f}")
-print(f"True Negative Rate (TNR): {tnr:.4f}")
-print(f"Precision: {precision:.4f}")
-print(f"F1-score: {f1:.4f}")
-```
-
-### finding the best test error rate when the size of training set is 10; 20; 30 ... 210. For each N, training set will be the  first N/3 rows of Class 0 and the  first N - N/3 rows of Class 1. for each N, we'll select the optimal k from a set starting from k = 1, increasing by 5. For example, if N = 200, the optimal k is selected from f1; 6; 11; : : : ; 196g.
-
-### 🔧 Code Example
-```python
-train_class_normal = normal.head(70)
-train_class_abnormal = abnormal.head(140)
-
-train_set = pd.concat([train_class_normal, train_class_abnormal])
-
-test_class_normal = normal.iloc[70:]
-test_class_abnormal = abnormal.iloc[140:]
-
-
-test_set = pd.concat([test_class_normal, test_class_abnormal])
-
-
-X_train = train_set.loc[:, 'pelvic_incidence':'degree_spondylolisthesis'].values
-y_train = train_set['Class']
-
-X_test = test_set.loc[:, 'pelvic_incidence':'degree_spondylolisthesis'].values
-y_test = test_set['Class']
-
-k_values = list(range(208,3,-3))
-
-train_errors = []
-test_errors = []
-
-for k in k_values:
-    knn = KNeighborsClassifier(n_neighbors = k, metric = "euclidean")
-    knn.fit(X_train, y_train)
-    y_train_pred = knn.predict(X_train)
-    y_test_pred = knn.predict(X_test)
-
-    train_error = 1 - accuracy_score(y_train, y_train_pred)
-    test_error = 1 - accuracy_score(y_test, y_test_pred)
-
-    train_errors.append(train_error)
-    test_errors.append(test_error)
-
-```
-
-### 🔧 Code Example
-```python
-
-N_values = list(range(10,211,10))
-
-best_test_errors = []
-best_train_errors = []
-
-for N in N_values:
-    train_class_normal = normal.head(N//3)
-    train_class_abnormal = abnormal.head(N-(N//3))
-    train_set = pd.concat([train_class_normal, train_class_abnormal])
-
-    X_train = train_set.loc[:, 'pelvic_incidence':'degree_spondylolisthesis'].values
-    y_train = train_set['Class']
-
-    
-    X_test = test_set.loc[:, 'pelvic_incidence':'degree_spondylolisthesis'].values
-    y_test = test_set['Class']
-
-    
-    k_values = list(range(1, min(N, 200), 5))
-    
-    test_errors = []
-    train_errors = []
-
-    for k in k_values:
-        knn = KNeighborsClassifier(n_neighbors=k, metric="euclidean")
-        knn.fit(X_train, y_train)
-        y_test_pred = knn.predict(X_test)
-        y_train_pred = knn.predict(X_train)
-
-        test_error = 1 - accuracy_score(y_test, y_test_pred)
-        train_error = 1 - accuracy_score(y_train,y_train_pred)
-        
-        test_errors.append(test_error)
-        train_errors.append(train_error)
-    #print(train_errors)
-
-    
-    best_test_errors.append(min(test_errors))
-    best_train_errors.append(min(train_errors))
-    
-
-```
-
-### 🔧 Code Example
-```python
-#plotting the learning curve 
-plt.figure(figsize=(8, 5))
-plt.plot(N_values, best_test_errors, marker='o', linestyle='-', label='Best Test Error Rate')
-
-plt.xlabel('Training Set Size (N)')
-plt.ylabel('Best Test Error Rate')
-plt.title('Learning Curve')
-plt.legend()
-plt.grid()
-plt.show()
-```
-
-### 🔧 Code Example
-```python
-plt.figure(figsize=(8, 5))
-plt.plot(N_values, best_train_errors, marker='o', linestyle='-', label='Best Train Error Rate')
-
-plt.xlabel('Training Set Size (N)')
-plt.ylabel('Best Train Error Rate')
-plt.title('Best Training Error vs Sample size')
-plt.legend()
-plt.grid()
-plt.show()
-```
-
-### It is expected to have a training error of 0 when k = 1 no matter what the N is -> (overfitting)
-
-## Now we have results with Euclidean metric, let's change it and analyze the results
-
-### Minkowski Distance, which becomes Manhattan Distance with p = 1.
-
-### 🔧 Code Example
-```python
-
-X_train = train_set.loc[:, 'pelvic_incidence':'degree_spondylolisthesis'].values
-y_train = train_set['Class']
-
-X_test = test_set.loc[:, 'pelvic_incidence':'degree_spondylolisthesis'].values
-y_test = test_set['Class']
-
-k_values = list(range(1, 197, 5))
-
-
-test_errors = []
-
-for k in k_values:
-    knn = KNeighborsClassifier(n_neighbors=k, metric="minkowski", p=1) 
-    knn.fit(X_train, y_train)
-    y_test_pred = knn.predict(X_test)
-
-    test_error = 1 - accuracy_score(y_test, y_test_pred)
-    test_errors.append(test_error)
-
-
-results_df = pd.DataFrame({"k": k_values, "Test Error": test_errors})
-
-
-print(results_df)
-
-```
-
-### 🔧 Code Example
-```python
-
-log10_p_values = np.arange(0.1, 1.1, 0.1)  
-p_values = 10 ** log10_p_values  
-
-
-test_errors = []
-
-
-k = 26
-
-for p in p_values:
-    knn = KNeighborsClassifier(n_neighbors=k, metric="minkowski", p=p)
-    knn.fit(X_train, y_train)
-    y_test_pred = knn.predict(X_test)
-
-    test_error = 1 - accuracy_score(y_test, y_test_pred)
-    test_errors.append(test_error)
-
-
-results_df = pd.DataFrame({"log10(p)": log10_p_values, "p": p_values, "Test Error": test_errors})
-
-
-best_index = results_df["Test Error"].idxmin()
-best_log10_p = results_df.loc[best_index, "log10(p)"]
-best_p = results_df.loc[best_index, "p"]
-best_test_error = results_df.loc[best_index, "Test Error"]
-
-
-
-print(results_df)
-
-
-
-```
-
-## chebyshev distance 
-
-### 🔧 Code Example
-```python
-k_values = list(range(1, 197, 5))
-
-
-test_errors = []
-
-for k in k_values:
-    knn = KNeighborsClassifier(n_neighbors=k, metric="chebyshev") 
-    knn.fit(X_train, y_train)
-    y_test_pred = knn.predict(X_test)
-
-    test_error = 1 - accuracy_score(y_test, y_test_pred)
-    test_errors.append(test_error)
-
-
-results_df = pd.DataFrame({"k": k_values, "Test Error": test_errors})
-
-
-print(results_df)
-```
-
-####  Mahalanobis Distance.
-
-### 🔧 Code Example
-```python
-cov_matrix = np.cov(X_train, rowvar=False)
-
-inv_cov_matrix = np.linalg.pinv(cov_matrix)
-
-
-k_values = list(range(1, 197, 5))
-test_errors = []
-
-
-for k in k_values:
-    knn = KNeighborsClassifier(n_neighbors=k, metric="mahalanobis", metric_params={"VI": inv_cov_matrix}) 
-    knn.fit(X_train, y_train)
-    y_test_pred = knn.predict(X_test)
-
-    test_error = 1 - accuracy_score(y_test, y_test_pred)
-    test_errors.append(test_error)
-
-
-results_df = pd.DataFrame({"k": k_values, "Test Error": test_errors})
-
-
-print(results_df)
-
-```
-
-### The majority polling decision can be replaced by weighted decision, in which the weight of each point in voting is inversely proportional to its distance from the query/test data point. In this case, closer neighbors of a query point will have a greater influence than neighbors which are further away. Let's use weighted voting with Euclidean, Manhattan, and Chebyshev distances and report the best test errors when k 2 f1; 6; 11; 16; : : : ; 196g.
-
-### 🔧 Code Example
-```python
-k_values = list(range(1, 197, 5))
-
-distance_metrics = ["euclidean", "manhattan", "chebyshev"]
-
-results = {metric: [] for metric in distance_metrics}
-
-for metric in distance_metrics:
-    test_errors = []
-    
-    
-    for k in k_values:
-        knn = KNeighborsClassifier(n_neighbors=k, metric=metric, weights="distance")  
-        knn.fit(X_train, y_train)
-        y_test_pred = knn.predict(X_test)
-
-        test_error = 1 - accuracy_score(y_test, y_test_pred)
-        test_errors.append(test_error)
-
-    results[metric] = test_errors  
-
-
-results_df = pd.DataFrame({"k": k_values, 
-                           "Euclidean Test Error": results["euclidean"], 
-                           "Manhattan Test Error": results["manhattan"], 
-                           "Chebyshev Test Error": results["chebyshev"]})
-
-
-print(results_df)
-
-
-best_results = results_df.iloc[:, 1:].min()
-print("\nBest Test Errors:")
-print(best_results)
-
-```
-
-Lowest training rate is 0 no matter we are using the full sample or any N, because in case of k=1 the training error is 0
-
+Note: Ensure you have the necessary permissions to use and distribute the dataset as per the UCI Machine Learning Repository's terms of use.
