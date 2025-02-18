@@ -69,7 +69,7 @@ pip install ucimlrepo numpy pandas matplotlib seaborn scikit-learn
 ### **1️⃣ Clone the Repository**
 ```sh
 git clone https://github.com/rafayelmirijanyan1997/Vertebral-Column-Database
-cd vertebral-column-analysis
+cd vertebral-column-database
 ```
 
 ### **2️⃣ Install Dependencies**
